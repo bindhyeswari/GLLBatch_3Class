@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>List of Movies</title>
+
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script>
+        $(function(){
+           var $input = $('#name');
+           //var $div2  = $('<div>').appendTo($div1);
+
+
+           getInfo.cache = {};
+           $input.keydown(function(evt){
+               if(evt.keyCode == 13){
+
+                   //console.log($input.val());
+                   getInfo($input.val());
+
+               }
+           });
+
+            function getInfo(str){
+
+                var $div2  = $('#results');
+                var encoding = encodeURIComponent(str);
+
+                var url = 'http://api.themoviedb.org/3/search/person?api_key=e7a8f7c210359818c2d775e767a0daf3&query='+encoding;
+                var id;
+
+
+                if(getInfo.cache[str]){
+
+                    append(getInfo.cache[str]);
+                }
+                else {
+                    $.ajax(url).done(function (values) {
+                        //console.log(values);
+                        id = values.results[0].id;
+                        console.log(id);
+                        var url2 = 'http://api.themoviedb.org/3/person/' + id + '/movie_credits?api_key=e7a8f7c210359818c2d775e767a0daf3';
+                        $.ajax(url2).done(function (values) {
+
+                            //console.log(values.cast[prop]);
+                            //arr.movie = values.cast[prop].title;
+                            //arr.year = values.cast[prop].release_date;
+                            //arr.push(values.cast[prop].release_date);
+                            //arr.sort();
+
+                            var arr = values.cast.sort(function (a, b) {
+                                var date_a = new Date(a['release_date']);
+                                var date_b = new Date(b['release_date']);
+
+                                return date_b - date_a;
+                            });
+
+                            getInfo.cache[str] = arr;
+
+
+                            console.log(arr);
+
+                            //append(arr);
+                            $div2.html('');
+                            arr.forEach(function (element) {
+                                $div2.append(element.title + ' ' + element.release_date + '<br>');
+                            });
+
+                        });
+                    })
+                }
+
+                function append(arr){
+                    $div2.html('');
+                    arr.forEach(function (element) {
+                        $div2.append(element.title + ' ' + element.release_date + '<br>');
+                    });
+
+                }
+
+            }
+
+
+        });
+
+
+
+    </script>
+</head>
+<body>
+<input type="text" id="name" placeholder="actor name"/>
+<div id="results"></div>
+
+</body>
+</html>

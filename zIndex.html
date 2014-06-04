@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        div {
+            height: 500px;
+            width: 500px;
+            position: absolute;
+        }
+        body > div:first-child{
+            background-color: red;
+            z-index: 3000;
+        }
+        body > div:last-child{
+            background-color: green;
+            z-index: 3001;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        Napoleon
+    </div>
+    <div>
+        Hitler
+    </div>
+</body>
+</html>
